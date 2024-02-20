@@ -7,8 +7,7 @@ import java.io.Serializable;
 /**
  * 创建请求
  *
- * @author <a href="https://github.com/lilhcygan">程序员鱼皮</a>
- * @from <a href="https://lhcygan.icu">编程导航知识星球</a>
+
  */
 @Data
 public class GenChartByAiRequest implements Serializable {
