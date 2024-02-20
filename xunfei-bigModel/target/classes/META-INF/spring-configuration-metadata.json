@@ -1,0 +1,37 @@
+{
+  "groups": [
+    {
+      "name": "xf.config",
+      "type": "com.lhcygan.xunfei.config.XFConfig",
+      "sourceType": "com.lhcygan.xunfei.config.XFConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "xf.config.api-key",
+      "type": "java.lang.String",
+      "sourceType": "com.lhcygan.xunfei.config.XFConfig"
+    },
+    {
+      "name": "xf.config.api-secret",
+      "type": "java.lang.String",
+      "sourceType": "com.lhcygan.xunfei.config.XFConfig"
+    },
+    {
+      "name": "xf.config.app-id",
+      "type": "java.lang.String",
+      "sourceType": "com.lhcygan.xunfei.config.XFConfig"
+    },
+    {
+      "name": "xf.config.host-url",
+      "type": "java.lang.String",
+      "sourceType": "com.lhcygan.xunfei.config.XFConfig"
+    },
+    {
+      "name": "xf.config.max-response-time",
+      "type": "java.lang.Integer",
+      "sourceType": "com.lhcygan.xunfei.config.XFConfig"
+    }
+  ],
+  "hints": []
+}

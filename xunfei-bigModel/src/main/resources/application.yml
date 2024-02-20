@@ -1,0 +1,28 @@
+server:
+  port: 9000
+
+xf:
+  config:
+#    hostUrl: https://spark-api.xf-yun.com/v3.5/chat
+    hostUrl: 
+    appId: 
+    apiSecret: 
+    apiKey: 
+    maxResponseTime: 30
+
+spring :
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+
+# ??????
+knife4j:
+  enable: true
+  openapi:
+    title: "????"
+    version: 1.0
+    group:
+      default:
+        api-rule: package
+        api-rule-resources:
+          - com.lhcygan.xunfei.controller
