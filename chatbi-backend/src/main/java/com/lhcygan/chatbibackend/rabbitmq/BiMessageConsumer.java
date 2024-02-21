@@ -1,5 +1,7 @@
 package com.lhcygan.chatbibackend.rabbitmq;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.lhcygan.chatbibackend.common.ErrorCode;
 import com.lhcygan.chatbibackend.constant.BiMqConstant;
 import com.lhcygan.chatbibackend.exception.BusinessException;
@@ -70,13 +72,14 @@ public class BiMessageConsumer {
 
         // 调用AI
         String result = aiManager.doChat(buildUserInput(chart));
-        String[] splits = result.split("【【【【【");
-        if (splits.length < 3) {
+        JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
+        if (result.length() < 10) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
         }
-        String genChart = splits[1].trim();
+        String genChart = resultJson.get("echartsCode").toString();
         genChart = JsonUtils.addQuotesToKeys(genChart);
-        String genResult = splits[2].trim()
+
+        String genResult = resultJson.get("conclusion").toString()
                 .replace("\\n", "").replace("\\\"", "\"").replace("\"}", "");
         Chart updateChartResult = new Chart();
         updateChartResult.setId(chart.getId());

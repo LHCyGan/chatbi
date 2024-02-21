@@ -3,10 +3,12 @@ package com.lhcygan.chatbibackend.controller;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.lhcygan.chatbibackend.annotation.AuthCheck;
 import com.lhcygan.chatbibackend.common.BaseResponse;
 import com.lhcygan.chatbibackend.common.DeleteRequest;
@@ -45,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -347,13 +350,14 @@ public class ChartController {
 
             // 调用AI
             String result = aiManager.doChat(userInput.toString());
-            String[] splits = result.split("【【【【【");
-            if (splits.length < 3) {
+            JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
+            if (result.length() < 10) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
             }
-            String genChart = splits[1].trim();
+            String genChart = resultJson.get("echartsCode").toString();
             genChart = JsonUtils.addQuotesToKeys(genChart);
-            String genResult = splits[2].trim()
+
+            String genResult = resultJson.get("conclusion").toString()
                     .replace("\\n", "").replace("\\\"", "\"").replace("\"}", "");
 
             Chart updateChartResult = new Chart();
@@ -424,14 +428,14 @@ public class ChartController {
         userInput.append(csvData).append("\n");
 
         String result = aiManager.doChat(userInput.toString());
-        String[] splits = result.split("【【【【【");
-        if (splits.length < 3) {
+        JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
+        if (result.length() < 10) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
         }
-        String genChart = splits[1].trim();
+        String genChart = resultJson.get("echartsCode").toString();
         genChart = JsonUtils.addQuotesToKeys(genChart);
 
-        String genResult = splits[2].trim()
+        String genResult = resultJson.get("conclusion").toString()
                 .replace("\\n", "").replace("\\\"", "\"").replace("\"}", "");
 
         // 插入数据库
