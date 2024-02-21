@@ -31,7 +31,17 @@
 - 自定义权限注解 + 全局校验
 - 全局跨域处理
 - 长整数丢失精度解决
+
+  
 - 多环境配置
 
 # 项目架构
 ![alt text](image.png)
+
+# 项目启动
+- 下载/拉取本项目到本地
+- 通过 IDEA 代码编辑器进行打开项目，等待依赖的下载
+- 修改配置文件 chatbi-backend 下 application.yaml 的信息，比如数据库、Redis、RabbitMQ等
+- 修改配置文件 xunfei-bigModel下 application.yaml 的信息，讯飞星火的appid等信息
+- 修改信息完成后，分别启动chatbi-backend 和 xunfei-bigMode
+
