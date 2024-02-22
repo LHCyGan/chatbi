@@ -17,6 +17,7 @@
 - IDEA插件 MyBatisX ： 根据数据库表自动生成
 - RabbitMQ：消息队列
 - AI SDK：讯飞星火接口开发
+- Guava-Retry： 对不合理的AI响应重试
 - JDK 线程池及异步化
 - Swagger + Knife4j 项目文档
 - Easy Excel：表格数据处理、Hutool工具库 、Apache Common Utils、Gson 解析库、Lombok 注解
