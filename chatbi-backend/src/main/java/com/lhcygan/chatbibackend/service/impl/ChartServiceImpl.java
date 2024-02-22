@@ -14,6 +14,8 @@ import com.lhcygan.chatbibackend.mapper.ChartMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.auth.BasicUserPrincipal;
 import org.checkerframework.checker.units.qual.C;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,7 @@ import static com.lhcygan.chatbibackend.constant.RedisConstant.*;
 public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
     implements ChartService{
 
-    @Resource
+    @Autowired(required = false)
     private StringRedisTemplate stringRedisTemplate;
 
     @Resource

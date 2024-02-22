@@ -31,6 +31,7 @@ import com.lhcygan.chatbibackend.service.ChartService;
 import com.lhcygan.chatbibackend.service.UserService;
 import com.lhcygan.chatbibackend.utils.ExcelUtils;
 import com.lhcygan.chatbibackend.utils.JsonUtils;
+import com.lhcygan.chatbibackend.utils.RetryUtils;
 import com.lhcygan.chatbibackend.utils.SqlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -79,9 +80,6 @@ public class ChartController {
 
     @Resource
     private RabbitMqMessageProducer rabbitMqMessageProducer;
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
 
     private final static Gson GSON = new Gson();
 
@@ -354,7 +352,12 @@ public class ChartController {
             }
 
             // 调用AI
-            String result = aiManager.doChat(userInput.toString());
+//            String result = aiManager.doChat(userInput.toString());
+//            JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
+//            if (result.length() < 10) {
+//                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
+//            }
+            String result = RetryUtils.retry(() -> aiManager.doChat(userInput.toString()));
             JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
             if (result.length() < 10) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
@@ -432,7 +435,12 @@ public class ChartController {
         String csvData = ExcelUtils.excelToCsv(multipartFile);
         userInput.append(csvData).append("\n");
 
-        String result = aiManager.doChat(userInput.toString());
+//        String result = aiManager.doChat(userInput.toString());
+//        JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
+//        if (result.length() < 10) {
+//            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
+//        }
+        String result = RetryUtils.retry(() -> aiManager.doChat(userInput.toString()));
         JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
         if (result.length() < 10) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");

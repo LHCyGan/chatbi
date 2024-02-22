@@ -14,4 +14,6 @@ import java.util.List;
 public interface ChartService extends IService<Chart> {
 
     public List<Chart> listChartByCacheService() throws JsonProcessingException;
+
+    public Chart getChartByCache(long id) throws JsonProcessingException;
 }

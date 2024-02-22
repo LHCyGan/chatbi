@@ -10,6 +10,7 @@ import com.lhcygan.chatbibackend.model.entity.Chart;
 import com.lhcygan.chatbibackend.model.enums.ExecStatusEnum;
 import com.lhcygan.chatbibackend.service.ChartService;
 import com.lhcygan.chatbibackend.utils.JsonUtils;
+import com.lhcygan.chatbibackend.utils.RetryUtils;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Delivery;
 import lombok.SneakyThrows;
@@ -71,7 +72,12 @@ public class BiMessageConsumer {
         }
 
         // 调用AI
-        String result = aiManager.doChat(buildUserInput(chart));
+//        String result = aiManager.doChat(buildUserInput(chart));
+//        JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
+//        if (result.length() < 10) {
+//            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
+//        }
+        String result = RetryUtils.retry(() -> aiManager.doChat(buildUserInput(chart)));
         JSONObject resultJson = JSON.parseObject(JSON.parseObject(result).get("data").toString());
         if (result.length() < 10) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "AI 生成错误");
