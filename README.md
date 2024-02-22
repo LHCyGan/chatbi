@@ -12,7 +12,7 @@
 - Spring AOP 切面编程
 - Spring Scheduler 定时任务
 - Spring 事务注解
-- Redis：Redisson限流控制
+- Redis：Redisson限流控制; 缓存图表分析数据，提高查询效率
 - MyBatis-Plus 数据库访问结构
 - IDEA插件 MyBatisX ： 根据数据库表自动生成
 - RabbitMQ：消息队列
