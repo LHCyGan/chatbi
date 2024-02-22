@@ -1,6 +1,7 @@
 package com.lhcygan.chatbibackend.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -39,17 +40,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import static com.lhcygan.chatbibackend.constant.RedisConstant.CHART_LIST_CACHE_KEY;
 
 /**
  * 帖子接口
@@ -78,6 +79,9 @@ public class ChartController {
 
     @Resource
     private RabbitMqMessageProducer rabbitMqMessageProducer;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     private final static Gson GSON = new Gson();
 
@@ -202,6 +206,7 @@ public class ChartController {
         if (chartQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
         User loginUser = userService.getLoginUser(request);
         chartQueryRequest.setUserId(loginUser.getId());
         long current = chartQueryRequest.getCurrent();

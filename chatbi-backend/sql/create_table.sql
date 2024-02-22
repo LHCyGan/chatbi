@@ -1,5 +1,5 @@
 # 建表脚本
-
+creat
 
 -- 创建库
 create database if not exists chatbi;

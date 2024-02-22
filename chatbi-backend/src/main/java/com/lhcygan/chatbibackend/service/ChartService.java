@@ -1,7 +1,10 @@
 package com.lhcygan.chatbibackend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lhcygan.chatbibackend.model.entity.Chart;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author autoe
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ChartService extends IService<Chart> {
 
+    public List<Chart> listChartByCacheService() throws JsonProcessingException;
 }
