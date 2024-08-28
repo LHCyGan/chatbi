@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.lhcygan.xunfei.bean.NettyGroup;
 import com.lhcygan.xunfei.bean.ResultBean;
 import com.lhcygan.xunfei.bean.RoleContent;
+import com.lhcygan.xunfei.config.XFChatConfig;
 import com.lhcygan.xunfei.config.XFConfig;
+import com.lhcygan.xunfei.listener.XFWebChatClient;
 import com.lhcygan.xunfei.listener.XFWebClient;
 import com.lhcygan.xunfei.listener.XFWebSocketListener;
 import com.lhcygan.xunfei.service.PushService;
@@ -12,6 +14,7 @@ import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.WebSocket;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -26,7 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Version: 1.0
  */
 @Slf4j
-@Service
+//@Service
+@DubboService
 public class PushServiceImpl implements PushService {
 
     @Autowired
@@ -34,6 +38,12 @@ public class PushServiceImpl implements PushService {
 
     @Autowired
     private XFWebClient xfWebClient;
+
+    @Autowired
+    private XFChatConfig xfChatConfig;
+
+    @Autowired
+    private XFWebChatClient xfWebChatClient;
 
     @Override
     public void pushToOne(String uid, String text) {
@@ -99,4 +109,39 @@ public class PushServiceImpl implements PushService {
         }
         return ResultBean.success("");
     }
+
+
+    @Override
+    public synchronized ResultBean pushMessageToXFServerByChat(String uid, String text) {
+        RoleContent userRoleContent = RoleContent.createUserRoleContent(text);
+        ArrayList<RoleContent> questions = new ArrayList<>();
+        questions.add(userRoleContent);
+        XFWebSocketListener xfWebSocketListener = new XFWebSocketListener();
+        WebSocket webSocket = xfWebChatClient.sendMsg(uid, questions, xfWebSocketListener);
+        if (webSocket == null) {
+            log.error("webSocket连接异常");
+            ResultBean.fail("请求异常，请联系管理员");
+        }
+        try {
+            int count = 0;
+            int maxCount = xfChatConfig.getMaxResponseTime() * 5;
+            while (count <= maxCount) {
+                Thread.sleep(200);
+                if (xfWebSocketListener.isWsCloseFlag()) {
+                    break;
+                }
+                count++;
+            }
+            if (count > maxCount) {
+                return ResultBean.fail("响应超时，请联系相关人员");
+            }
+            return ResultBean.success(xfWebSocketListener.getAnswer());
+        } catch (Exception e) {
+            log.error("请求异常：{}", e);
+        } finally {
+            webSocket.close(1000, "");
+        }
+        return ResultBean.success("");
+    }
+
 }

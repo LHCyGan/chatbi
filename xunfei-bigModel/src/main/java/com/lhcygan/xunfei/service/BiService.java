@@ -9,4 +9,6 @@ public interface PushService {
     void pushToAll(String text);
 
     ResultBean pushMessageToXFServer(String uid, String text);
+
+    ResultBean pushMessageToXFServerByChat(String uid, String text);
 }
